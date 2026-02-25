@@ -1,8 +1,9 @@
+const Transaction = require('../models/Transaction');
 const transactionService = require('../services/transactionService');
 
 const getTransactions = async (req, res) => {
     try {
-        const data = await transactionService.getTransactions();
+        const data = await transactionService.getAllTransactions();
         res.status(200).json(data);
     }
     catch (error) {
@@ -32,8 +33,25 @@ const removeTransaction = async (req, res) => {
     }
 }
 
+const getTransactionByRange = async (req, res) => {
+    const { startDate, endDate } = req.query;
+    try {
+        const data = await Transaction.find({
+            date: {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+
+            }
+        }).sort({ date: 1 });
+        res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getTransactions,
     addTransaction,
-    removeTransaction
+    removeTransaction,
+    getTransactionByRange
 }
