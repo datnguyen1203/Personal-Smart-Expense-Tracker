@@ -1,4 +1,4 @@
-const Transaction = require('../models/Transaction');
+const Transaction = require('../models/transaction');
 
 const getAllTransactions = async () => {
     return await Transaction.find().sort({ date: -1 });
