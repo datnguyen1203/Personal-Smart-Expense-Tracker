@@ -97,13 +97,13 @@ const Dashboard = () => {
             <div className='grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6'>
                 <div className='p-3 sm:p-4 rounded-xl shadow-sm border border-gray-100'>
                     <h4 className="font-semibold text-xs sm:text-sm mb-2">Theo danh mục</h4>
-                    <div className='h-[150px] sm:h-[180px]'>
+                    <div className=''>
                         <CategoryHorizontalBar transactions={transactions} />
                     </div>
                 </div>
                 <div className='p-3 sm:p-4 rounded-xl shadow-sm border border-gray-100'>
                     <h4 className="font-semibold text-xs sm:text-sm mb-2">Theo ngày trong tuần</h4>
-                    <div className='h-[150px] sm:h-[180px]'>
+                    <div className=''>
                         <WeeklyLineChart transactions={transactions} />
                     </div>
                 </div>

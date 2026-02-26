@@ -42,9 +42,9 @@ export const CategoryHorizontalBar = ({ transactions }) => {
                 borderColor: 'rgb(54, 162, 235)',
 
                 // CHỈNH SỬA TẠI ĐÂY:
-                barThickness: 20,       // Độ dày cố định của mỗi cột (ví dụ 20px)
+                barThickness: 10,       // Độ dày cố định của mỗi cột (ví dụ 20px)
                 categoryPercentage: 1.0, // Tận dụng tối đa không gian của nhóm danh mục
-                barPercentage: 1.0,      // Tận dụng tối đa không gian bên trong mỗi cột      // Bo góc cho cột nhìn hiện đại hơn
+                barPercentage: 0.9,      // Tận dụng tối đa không gian bên trong mỗi cột      // Bo góc cho cột nhìn hiện đại hơn
             },
         ],
     };
