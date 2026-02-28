@@ -9,6 +9,7 @@ require('dotenv').config();
 
 
 var transactionRouter = require('./routes/transactionRouter');
+var authRouter = require('./routes/auth');
 
 var app = express();
 
@@ -33,6 +34,7 @@ mongoose.connect("mongodb+srv://nguyenphamtiendat1232003:12345@cluster0.va9dbgi.
 
 
 app.use('/transactions', transactionRouter);
+app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

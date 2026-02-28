@@ -3,7 +3,7 @@ const transactionService = require('../services/transactionService');
 
 const getTransactions = async (req, res) => {
     try {
-        const data = await transactionService.getAllTransactions();
+        const data = await transactionService.getAllTransactions(req.user.id);
         res.status(200).json(data);
     }
     catch (error) {
@@ -13,7 +13,7 @@ const getTransactions = async (req, res) => {
 
 const addTransaction = async (req, res) => {
     try {
-        const savedData = await transactionService.createTransaction(req.body);
+        const savedData = await transactionService.createTransaction(req.body, req.user.id);
         res.status(201).json(savedData);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -22,7 +22,7 @@ const addTransaction = async (req, res) => {
 
 const removeTransaction = async (req, res) => {
     try {
-        const deletedData = await transactionService.deleteTransaction(req.params.id);
+        const deletedData = await transactionService.deleteTransaction(req.params.id, req.user.id);
         if (deletedData) {
             res.status(200).json({ message: 'Transaction deleted successfully' });
         } else {
