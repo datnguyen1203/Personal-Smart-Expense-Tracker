@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { fetchTransactions, deleteTransaction } from '../api/transactionApi';
 import { PlusCircle, Trash2, Wallet } from 'lucide-react';
 import AddTransaction from '../components/addTransaction';
 import ConfirmDialog from '../components/ConfirmDialog';
-import CategoryChart, { CategoryHorizontalBar, WeeklyLineChart, WeekStrip } from '../components/Charts';
+import { CategoryHorizontalBar, WeeklyLineChart, WeekStrip } from '../components/Charts';
 
 const Dashboard = ({ user, onLogout }) => {
     const [transactions, setTransactions] = useState([]);
@@ -21,11 +21,7 @@ const Dashboard = ({ user, onLogout }) => {
     };
     const [selectedWeekDay, setSelectedWeekDay] = useState(getTodayWeekDay());
 
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = async () => {
+    const loadData = useCallback(async () => {
         try {
             const res = await fetchTransactions();
             setTransactions(res.data);
@@ -35,7 +31,11 @@ const Dashboard = ({ user, onLogout }) => {
                 onLogout();
             }
         }
-    };
+    }, [onLogout]);
+
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
 
     const showFormAdd = () => setIsModalOpen(true);
     const closeFormAdd = () => setIsModalOpen(false);

@@ -1,4 +1,4 @@
-import { AlertTriangle, X } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 
 const ConfirmDialog = ({ isOpen, title, message, onConfirm, onCancel, isLoading = false }) => {
     if (!isOpen) return null;

@@ -19,7 +19,7 @@ app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: "https://expense-tracker.vercel.app" || 'http://localhost:3000',
   credentials: true
 }));
 app.use(express.json());
