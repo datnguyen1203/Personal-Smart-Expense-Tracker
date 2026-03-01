@@ -19,7 +19,7 @@ app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://personal-smart-expense-tracker.onrender.com'],
+  origin: ['http://localhost:3000', 'https://dn-expense-tracker.vercel.app'],
   credentials: true
 }));
 app.use(express.json());
