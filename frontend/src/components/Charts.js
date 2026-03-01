@@ -8,8 +8,9 @@ import {
     Title,
     Tooltip,
     Legend,
+    ArcElement,
 } from 'chart.js';
-import { Bar, Line } from 'react-chartjs-2';
+import { Bar, Line, Doughnut } from 'react-chartjs-2';
 
 // Đăng ký các thành phần cần thiết
 ChartJS.register(
@@ -20,7 +21,8 @@ ChartJS.register(
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    ArcElement,
 );
 
 export const CategoryHorizontalBar = ({ transactions }) => {
@@ -146,4 +148,185 @@ export const WeekStrip = ({ transactions, selectedDay, onSelectDay }) => {
             })}
         </div>
     );
+};
+
+export const MonthlyBarChart = ({ transactions }) => {
+    const getDaysInMonth = () => {
+        const now = new Date();
+        return new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    };
+
+    const daysInMonth = getDaysInMonth();
+    const dailyData = new Array(daysInMonth).fill(0);
+
+    transactions.forEach(t => {
+        const date = new Date(t.date);
+        const day = date.getDate() - 1; // 0-indexed
+        if (t.type === 'expense' && day >= 0 && day < daysInMonth) {
+            dailyData[day] += t.amount;
+        }
+    });
+
+    const labels = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`);
+
+    const data = {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Chi tiêu hàng ngày',
+                data: dailyData,
+                backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                borderColor: 'rgb(59, 130, 246)',
+                borderWidth: 1,
+            },
+        ],
+    };
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+        },
+        scales: {
+            x: {
+                grid: { display: false },
+                ticks: { font: { size: 11 }, maxRotation: 45, minRotation: 0 }
+            },
+            y: {
+                beginAtZero: true,
+                grid: { color: '#f3f4f6' },
+                ticks: { font: { size: 15 } }
+            }
+        },
+    };
+
+    return <Bar data={data} options={options} />;
+};
+
+export const WeekCategoryPieChart = ({ transactions }) => {
+    const getCurrentWeekStart = () => {
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+        return new Date(today.setDate(diff));
+    };
+
+    const weekStart = getCurrentWeekStart();
+    weekStart.setHours(0, 0, 0, 0);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+    weekEnd.setHours(23, 59, 59, 999);
+
+    const categories = {};
+    transactions.forEach(t => {
+        const txDate = new Date(t.date);
+        if (t.type === 'expense' && txDate >= weekStart && txDate <= weekEnd) {
+            categories[t.category] = (categories[t.category] || 0) + t.amount;
+        }
+    });
+
+    const colors = [
+        'rgba(255, 99, 132, 0.7)',
+        'rgba(54, 162, 235, 0.7)',
+        'rgba(255, 206, 86, 0.7)',
+        'rgba(75, 192, 192, 0.7)',
+        'rgba(153, 102, 255, 0.7)',
+        'rgba(255, 159, 64, 0.7)',
+    ];
+
+    const data = {
+        labels: Object.keys(categories),
+        datasets: [
+            {
+                data: Object.values(categories),
+                backgroundColor: colors.slice(0, Object.keys(categories).length),
+                borderColor: colors.slice(0, Object.keys(categories).length).map(c => c.replace('0.7', '1')),
+                borderWidth: 2,
+            },
+        ],
+    };
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: { font: { size: 12 }, padding: 15 },
+            },
+            tooltip: {
+                callbacks: {
+                    label: (context) => {
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const value = context.parsed;
+                        const percent = ((value / total) * 100).toFixed(1);
+                        return `${context.label}: ${value.toLocaleString()} VNĐ (${percent}%)`;
+                    }
+                }
+            }
+        },
+    };
+
+    return <Doughnut data={data} options={options} />;
+};
+
+export const MonthCategoryPieChart = ({ transactions }) => {
+    const today = new Date();
+    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    monthStart.setHours(0, 0, 0, 0);
+    const monthEnd = new Date();
+    monthEnd.setHours(23, 59, 59, 999);
+
+    const categories = {};
+    transactions.forEach(t => {
+        const txDate = new Date(t.date);
+        if (t.type === 'expense' && txDate >= monthStart && txDate <= monthEnd) {
+            categories[t.category] = (categories[t.category] || 0) + t.amount;
+        }
+    });
+
+    const colors = [
+        'rgba(255, 99, 132, 0.7)',
+        'rgba(54, 162, 235, 0.7)',
+        'rgba(255, 206, 86, 0.7)',
+        'rgba(75, 192, 192, 0.7)',
+        'rgba(153, 102, 255, 0.7)',
+        'rgba(255, 159, 64, 0.7)',
+    ];
+
+    const data = {
+        labels: Object.keys(categories),
+        datasets: [
+            {
+                data: Object.values(categories),
+                backgroundColor: colors.slice(0, Object.keys(categories).length),
+                borderColor: colors.slice(0, Object.keys(categories).length).map(c => c.replace('0.7', '1')),
+                borderWidth: 2,
+            },
+        ],
+    };
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: { font: { size: 12 }, padding: 15 },
+            },
+            tooltip: {
+                callbacks: {
+                    label: (context) => {
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const value = context.parsed;
+                        const percent = ((value / total) * 100).toFixed(1);
+                        return `${context.label}: ${value.toLocaleString()} VNĐ (${percent}%)`;
+                    }
+                }
+            }
+        },
+    };
+
+    return <Doughnut data={data} options={options} />;
 };

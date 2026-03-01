@@ -33,16 +33,33 @@ const removeTransaction = async (req, res) => {
     }
 }
 
+const updateTransaction = async (req, res) => {
+    try {
+        const updatedData = await transactionService.updateTransaction(req.params.id, req.body, req.user.id);
+        if (updatedData) {
+            res.status(200).json(updatedData);
+        } else {
+            res.status(404).json({ message: 'Transaction not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 const getTransactionByRange = async (req, res) => {
     const { startDate, endDate } = req.query;
     try {
-        const data = await Transaction.find({
-            date: {
-                $gte: new Date(startDate),
-                $lte: new Date(endDate)
+        const data = await transactionService.getTransactionsByDateRange(req.user.id, startDate, endDate);
+        res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
-            }
-        }).sort({ date: 1 });
+const getTransactionByDate = async (req, res) => {
+    const { date } = req.query;
+    try {
+        const data = await transactionService.getTransactionsByDate(req.user.id, date);
         res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -53,5 +70,7 @@ module.exports = {
     getTransactions,
     addTransaction,
     removeTransaction,
-    getTransactionByRange
+    updateTransaction,
+    getTransactionByRange,
+    getTransactionByDate
 }

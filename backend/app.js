@@ -19,7 +19,7 @@ app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(cors({
-  origin: "https://expense-tracker.vercel.app" || 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'https://personal-smart-expense-tracker.onrender.com'],
   credentials: true
 }));
 app.use(express.json());
@@ -28,7 +28,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to MongoDB
-mongoose.connect("mongodb+srv://nguyenphamtiendat1232003:12345@cluster0.va9dbgi.mongodb.net/personal-smart-expense-tracker")
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
